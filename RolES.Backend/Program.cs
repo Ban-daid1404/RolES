@@ -1,8 +1,9 @@
 using MySql.Data.MySqlClient;
 using RolES.Backend.Dados;
 using RolES.Backend.DTOs;
+using RolES.Backend.Modelos;
 using RolES.Backend.Servicos;
-
+// rota de login
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
@@ -31,7 +32,7 @@ app.MapGet("/", () => // Metodo sem nome
     });
 });
 
-app.MapPost("/usuario", async (CadastroUsuarioDto requestBody, UsuarioServicos uServicos) =>
+app.MapPost("/usuario", async (CadastroUsuarioDto requestBody, UsuarioServicos uServicos) => //nosso servidor é o app
 {
     try
     {
@@ -51,6 +52,32 @@ app.MapPost("/usuario", async (CadastroUsuarioDto requestBody, UsuarioServicos u
                 Mensagem = "0 e-maildp usuario já consta cadastrado."
             });
         throw;
+    }
+    catch
+    {
+        return Results.InternalServerError();
+    }
+});
+
+app.MapPost("/login", async (LoginUsuarioDTO corpoRequisicao, UsuarioServicos uServicos) =>  
+{
+    try
+    {
+        var usuarioEncontrado = await uServicos.BuscarPorEmailAsync(corpoRequisicao.Email);
+        if (usuarioEncontrado == null)
+            return Results.NotFound(new
+            {
+                Mensagem = "usuario não encontrado"
+            });
+
+        if (corpoRequisicao.Senha != usuarioEncontrado.Senha)
+            return Results.BadRequest(new
+            {
+                Mensagem = "email/senha estão incorretos."
+                
+            });
+        return Results.Ok();
+
     }
     catch
     {
