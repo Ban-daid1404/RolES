@@ -1,15 +1,20 @@
 @page "/login"
+@using RolES.Frontend.Modelos
+@rendermode InteractiveServer
+@inject HttpClient http
+@inject NavigationManager navegador
+
 <h1>Login</h1>
 
-<form>
+<form @onsubmit="EnviarDadosParaApi">
     <label>
         E-mail:
-        <input type="email" required/>
+        <input type="email" required @bind-value="dadosEnvio.Email"/>
     </label>
-       
-    <label >
+
+    <label>
         Senha:
-        <input type="password" required/>
+        <input type="password" required autocomplete="current-password" @bind-value="dadosEnvio.Senha"/>
     </label>
     <button type="submit">
         Entrar
@@ -17,5 +22,20 @@
 </form>
 
 @code {
-    
+    private LoginModelo dadosEnvio = new();
+
+    private async Task EnviarDadosParaApi()
+    {
+     var resposta = await  http.PostAsJsonAsync("http://10.112.4.157/Login",dadosEnvio);
+     if (resposta.IsSuccessStatusCode)
+     {
+         navegador.NavigateTo("/perfil");
+         Console.WriteLine("Bem sucedido!");
+     }
+     else
+     {
+         Console.WriteLine("mal sucedido");
+     }
+    }
+
 }
