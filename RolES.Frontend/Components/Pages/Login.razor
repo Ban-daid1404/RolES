@@ -1,8 +1,8 @@
 @page "/login"
 @using RolES.Frontend.Modelos
 @rendermode InteractiveServer
-@inject HttpClient http
-@inject NavigationManager navegador
+@inject HttpClient Http
+@inject NavigationManager Navegador
 
 <h1>Login</h1>
 
@@ -22,15 +22,14 @@
 </form>
 
 @code {
-    private LoginModelo dadosEnvio = new();
+    private readonly LoginModelo dadosEnvio = new();
 
     private async Task EnviarDadosParaApi()
     {
-     var resposta = await  http.PostAsJsonAsync("http://10.112.4.157/Login",dadosEnvio);
+     var resposta = await  Http.PostAsJsonAsync("/login", dadosEnvio);
      if (resposta.IsSuccessStatusCode)
      {
-         navegador.NavigateTo("/perfil");
-         Console.WriteLine("Bem sucedido!");
+         Navegador.NavigateTo("/perfil");
      }
      else
      {

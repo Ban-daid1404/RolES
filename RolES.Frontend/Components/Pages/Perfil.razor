@@ -1,21 +1,35 @@
 @page "/perfil"
+@using System.Net
+@using Microsoft.AspNetCore.Mvc
 @using RolES.Frontend.Modelos
 @inject HttpClient http
+@inject NavigationManager Navegador
+
 
 <h1>Perfil</h1>
 
-@if (usuarioAtual != null)
+@if (_usuarioAtual is not null)
 {
-    <p>Nome: @usuarioAtual.Nome </p>
-    <p>Email: @usuarioAtual.Email </p>
+<p>Nome: @_usuarioAtual?.Nome </p>
+<p>Email: @_usuarioAtual?.Email </p>
 }
 
 
 @code {
-    private usuarioDto usuarioAtual;
+    private usuarioDto? _usuarioAtual;
+
     protected override async Task OnInitializedAsync()
     {
-        var resposta = await http.GetFromJsonAsync<usuarioDto>("http://10.112.4.157/eu");
-        usuarioAtual = resposta;
+        try
+        {
+            _usuarioAtual = await http.GetFromJsonAsync<usuarioDto>("/eu");
+        }
+        catch (HttpRequestException e)
+        {
+            if (e.StatusCode == HttpStatusCode.Unauthorized) Navegador.NavigateTo("/login");
+        }
     }
+
+    
+
 }
