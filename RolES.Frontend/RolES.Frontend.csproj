@@ -8,4 +8,10 @@
         <UserSecretsId>83979ada-5120-48ea-8b3e-86f26f560f36</UserSecretsId>
     </PropertyGroup>
 
+    <ItemGroup>
+      <None Update="Components\Pages\Login.Razor.css">
+        <DependentUpon>Login.razor</DependentUpon>
+      </None>
+    </ItemGroup>
+
 </Project>
